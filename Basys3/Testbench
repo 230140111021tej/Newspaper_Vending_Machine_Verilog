@@ -1,0 +1,161 @@
+// FILE: tb_newspaper_vending.v
+// PURPOSE: Simulation testbench for newspaper vending machine
+// USAGE: Use this for behavioral simulation in Vivado, NOT for synthesis
+// NOTE: This testbench is for simulation only - do NOT add to synthesis
+
+`timescale 1ns / 1ps
+
+module tb_newspaper_vending;
+    // Testbench signals
+    reg clk;
+    reg reset;
+    reg coin5;
+    reg coin10;
+    reg coin15;
+    wire newspaper;
+    wire [4:0] led_amount;
+    
+    // Instantiate the Unit Under Test (UUT)
+    newspaper_vending_machine uut (
+        .clk(clk),
+        .reset(reset),
+        .coin5(coin5),
+        .coin10(coin10),
+        .coin15(coin15),
+        .newspaper(newspaper),
+        .led_amount(led_amount)
+    );
+    
+    // Clock generation - 100MHz (10ns period)
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // Toggle every 5ns = 10ns period
+    end
+    
+    // Stimulus process
+    initial begin
+        // Initialize inputs
+        reset = 1;
+        coin5 = 0;
+        coin10 = 0;
+        coin15 = 0;
+        
+        // Display header
+        $display("========================================");
+        $display("Newspaper Vending Machine Testbench");
+        $display("========================================");
+        $display("Time\t\tState\tAmount\tNewspaper");
+        $display("----------------------------------------");
+        
+        // Wait for global reset
+        #100;
+        reset = 0;
+        #50;
+        
+        // Test Case 1: Insert 3x ₹5 coins (total ₹15)
+        $display("\nTest 1: Three ₹5 coins");
+        insert_coin5();
+        #2000;
+        insert_coin5();
+        #2000;
+        insert_coin5();
+        #20000; // Wait to see newspaper output
+        
+        // Reset for next test
+        reset = 1;
+        #100;
+        reset = 0;
+        #100;
+        
+        // Test Case 2: Insert ₹10 + ₹5 (total ₹15)
+        $display("\nTest 2: One ₹10 + one ₹5 coin");
+        insert_coin10();
+        #2000;
+        insert_coin5();
+        #20000;
+        
+        // Reset for next test
+        reset = 1;
+        #100;
+        reset = 0;
+        #100;
+        
+        // Test Case 3: Insert one ₹15 coin (exact amount)
+        $display("\nTest 3: One ₹15 coin (exact)");
+        insert_coin15();
+        #20000;
+        
+        // Reset for next test
+        reset = 1;
+        #100;
+        reset = 0;
+        #100;
+        
+        // Test Case 4: Insert ₹5 + ₹10 (total ₹15)
+        $display("\nTest 4: One ₹5 + one ₹10 coin");
+        insert_coin5();
+        #2000;
+        insert_coin10();
+        #20000;
+        
+        // Reset for next test
+        reset = 1;
+        #100;
+        reset = 0;
+        #100;
+        
+        // Test Case 5: Overpayment ₹10 + ₹10 (total ₹20)
+        $display("\nTest 5: Two ₹10 coins (overpayment)");
+        insert_coin10();
+        #2000;
+        insert_coin10();
+        #20000;
+        
+        // End simulation
+        $display("\n========================================");
+        $display("Simulation Complete");
+        $display("========================================");
+        #100;
+        $finish;
+    end
+    
+    // Task to simulate ₹5 coin insertion
+    task insert_coin5;
+        begin
+            #10 coin5 = 1;
+            #50 coin5 = 0;
+            $display("%0t ns: ₹5 coin inserted", $time);
+        end
+    endtask
+    
+    // Task to simulate ₹10 coin insertion
+    task insert_coin10;
+        begin
+            #10 coin10 = 1;
+            #50 coin10 = 0;
+            $display("%0t ns: ₹10 coin inserted", $time);
+        end
+    endtask
+    
+    // Task to simulate ₹15 coin insertion
+    task insert_coin15;
+        begin
+            #10 coin15 = 1;
+            #50 coin15 = 0;
+            $display("%0t ns: ₹15 coin inserted", $time);
+        end
+    endtask
+    
+    // Monitor changes
+    always @(posedge clk) begin
+        if (newspaper)
+            $display("%0t ns: NEWSPAPER DISPENSED! Amount: %0d LEDs", $time, led_amount);
+    end
+    
+    // Generate VCD file for waveform viewing
+    initial begin
+        $dumpfile("newspaper_vending.vcd");
+        $dumpvars(0, tb_newspaper_vending);
+    end
+    
+endmodule
