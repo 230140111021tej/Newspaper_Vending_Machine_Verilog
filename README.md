@@ -77,42 +77,24 @@ Core state transitions:
 
 ```
 .
-├── Basys3/                    # FPGA constraints & files
-├── Code/                      # HDL source and modules
-├── Iverilog_output.png        # CLI output screenshot
+├── Basys3/                      # FPGA constraints & files
+├── Code/                        # HDL source and modules
+├── Iverilog_output.png          # CLI output screenshot
 ├── Newspaper_state_diagram.jpeg # FSM state diagram (above)
-├── RTL_Schematic.png          # Synthesized RTL schematic
-├── Technology Schematic.png   # Technology-mapped schematic
-├── Testbench/                 # Functional verification
-├── Waveform_output.png        # Simulation waveform
-└── README.md                  # Project documentation (you are here)
+├── RTL_Schematic.png            # Synthesized RTL schematic
+├── Technology Schematic.png     # Technology-mapped schematic
+├── Testbench/                   # Functional verification
+├── Waveform_output.png          # Simulation waveform
+└── README.md                    # Project documentation (you are here)
 ```
 
 ---
 
-## 🛠️ How to Run
+## 📊 Additional Visuals
 
-1. **Simulation**  
-   ! Run using Icarus Verilog or any supported simulator:
-   ```sh
-   iverilog -o newstb Testbench/newstb.v Code/news.v
-   vvp newstb
-   ```
-
-2. **View Waveforms**  
-   ! Analyze hardware timing and signals:
-   ```sh
-   gtkwave Waveform_output.vcd
-   ```
-   *(Images provided for instant reference.)*
-
----
-
-## 📈 Additional Visuals
-
-| RTL Schematic      | Technology Schematic |
-|:------------------:|:-------------------:|
-| ![RTL Schematic](RTL_Schematic.png) | ![Tech Schematic](Technology Schematic.png) |
+| RTL Schematic      | Technology Schematic      |
+|:------------------:|:------------------------:|
+| ![RTL Schematic](RTL_Schematic.png) | ![Technology Schematic](Technology%20Schematic.png) |
 
 ---
 
