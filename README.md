@@ -1,124 +1,152 @@
-# 📰 Newspaper Vending Machine FSM in Verilog HDL
+# 📰 Newspaper Vending Machine FSM – Verilog HDL
 
-*Model a real-life vending scenario: The machine dispenses a newspaper once coins totaling 15 units (5- and 10-unit coins) are inserted.*
-
----
-
-## Table of Contents
-
-- [About](#about)
-- [Features](#features)
-- [FSM Architecture](#fsm-architecture)
-- [Simulation & Output](#simulation--output)
-- [File Structure](#file-structure)
-- [How to Run](#how-to-run)
-- [License](#license)
-- [Contact](#contact)
+> **Hands-on Digital Design & Hardware Verification | FPGA-Ready**  
+> *Showcasing practical hardware modeling, testbenching, & professional project documentation*
 
 ---
 
-## About
-
-This project implements a **Newspaper Vending Machine** as a concise Finite State Machine (FSM) in Verilog. The machine dispenses a newspaper ("newspaper" output = 1) when a combination of coins adds up to 15 units. It is a textbook hardware design problem, simulating real vending logic: coins of 5 or 10 units can be entered, and the machine supports proper resets and synchronous operation.
+![FSM Architecture Diagram](Newspaper_state_diagram.jpeg)
 
 ---
 
-## Features
+## 📚 Overview
 
-- **FSM-based design:** Accurately tracks coins to dispense output only at the correct sum.
-- **Versatile simulation:** Demonstrates functionality with various coin sequences.
-- **Robust testbench:** Includes real-world usage and reset scenarios.
-- **Synthesizable code:** Suitable for FPGAs/ASICs and educational purposes.
+This project models a **Newspaper Vending Machine** using a precise, synthesizable Finite State Machine (FSM) in Verilog HDL. The system dispenses a newspaper when the sum of inserted coins reaches **15 units**—accepting only 5-unit and 10-unit coins.  
+Designed for clarity, reliability, and real-world fidelity, this project demonstrates end-to-end digital system development: from RTL design to rigorous simulation and verification.
 
 ---
 
-## FSM Architecture
+## 🚀 Key Features
 
-| State | Meaning                  | Transitions                                      |
-|-------|--------------------------|--------------------------------------------------|
-| s0    | 0 units (Initial/Reset)  | 5 → s5, 10 → s10, else s0                        |
-| s5    | 5 units                  | 5 → s10, 10 → s15, else s5                       |
-| s10   | 10 units                 | 5/10 → s15, else s10                             |
-| s15   | 15 units (Dispense)      | (outputs newspaper=1), resets to s0 on next clk   |
+- **Professional HDL Design:** FSM-based control, suitable for FPGA/ASIC.
+- **Robust Verification:** Realistic testbenches prove system correctness and edge cases.
+- **Comprehensive Documentation:** Clear code comments, signal/state diagrams, and simulation output included.
+- **Reset Handling:** Supports asynchronous/synchronous resets for reliability.
+- **Modern Workflow:** Includes waveform files for GTKWave and structured test scenarios.
+
+---
+
+## 🏗️ Project Architecture
+
+Core state transitions:
+
+| State | Meaning              | On 5-coin      | On 10-coin   | Else       |
+|-------|----------------------|----------------|--------------|------------|
+| s0    | 0 units (reset)      | s5             | s10          | s0         |
+| s5    | 5 units              | s10            | s15 *(disp.)*| s5         |
+| s10   | 10 units             | s15 *(disp.)*  | s15 *(disp.)*| s10        |
+| s15   | 15 units *(dispense)*| ➔ s0 (reset)   | ➔ s0 (reset) | s0 (reset) |
 
 - **Coin Input Encoding:**  
   - `2'b00` = No coin  
   - `2'b01` = 5-unit coin  
   - `2'b10` = 10-unit coin
 
+**State Diagram:**  
+![FSM State Diagram – Project Directory](Newspaper_state_diagram.jpeg)
+
 ---
 
-## Simulation & Output
+## 🧪 Simulation & Verification
 
-**Testbench Scenarios:**
-- 3 × 5-unit coins
-- (5-unit + 10-unit) coin
-- 2 × 10-unit coins (overpayment)
-- Reset at runtime
+### Testbench Scenarios
+- 3 × 5-unit coins → Dispense
+- (5-unit + 10-unit) coin → Dispense
+- 2 × 10-unit coins (tests overpayment logic)
+- Runtime Reset (tests robustness)
 
-#### Output Example
-
-```text
+#### Sample Output
+<pre>
   Time   Reset Newspaper
-   420     0       1   // Dispense after 3 × 5-unit coins
-   460     0       0
-   660     0       1   // Dispense after 5 + 10 coins
-   700     0       0
-  1100     0       1   // Dispense after two 10-coins (with gap)
-  1140     0       0
-```
+   420     0      1   // 3 × 5-unit coins
+   460     0      0
+   660     0      1   // 5 + 10 coins
+   700     0      0
+  1100     0      1   // Two 10-unit coins (overpayment)
+  1140     0      0
+</pre>
 
-#### Waveform
+**Waveform Example:**  
+![Simulation Waveform](Waveform_output.png)
 
-Generate with:
-```sh
-gtkwave wave.vcd
-```
-Analyze clock, resets, input coins, and dispensing pulses visually.
+*Open in GTKWave for detailed analysis.*
 
 ---
 
-## File Structure
+## 🗂️ Files & Structure
 
 ```
 .
-├── news.v      // FSM implementation (newspaper vending logic)
-├── newstb.v    // Testbench (instantiates FSM, applies stimulus)
-├── README.md   // Project documentation
+├── Basys3/                    # FPGA constraints & files
+├── Code/                      # HDL source and modules
+├── Iverilog_output.png        # CLI output screenshot
+├── Newspaper_state_diagram.jpeg # FSM state diagram (above)
+├── RTL_Schematic.png          # Synthesized RTL schematic
+├── Technology Schematic.png   # Technology-mapped schematic
+├── Testbench/                 # Functional verification
+├── Waveform_output.png        # Simulation waveform
+└── README.md                  # Project documentation (you are here)
 ```
 
 ---
 
-## How to Run
+## 🛠️ How to Run
 
-**1. Simulation**  
-Use Icarus Verilog or your favorite simulator:
+1. **Simulation**  
+   ! Run using Icarus Verilog or any supported simulator:
+   ```sh
+   iverilog -o newstb Testbench/newstb.v Code/news.v
+   vvp newstb
+   ```
 
-```sh
-iverilog -o newstb newstb.v news.v
-vvp newstb
-```
-
-**2. View Waveforms**  
-```sh
-gtkwave wave.vcd
-```
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).  
-&copy; 2025 Tejas R Mallah
+2. **View Waveforms**  
+   ! Analyze hardware timing and signals:
+   ```sh
+   gtkwave Waveform_output.vcd
+   ```
+   *(Images provided for instant reference.)*
 
 ---
 
-## Contact
+## 📈 Additional Visuals
+
+| RTL Schematic      | Technology Schematic |
+|:------------------:|:-------------------:|
+| ![RTL Schematic](RTL_Schematic.png) | ![Tech Schematic](Technology Schematic.png) |
+
+---
+
+## 🏆 Skills Demonstrated
+
+- Digital logic design & FSM modeling in Verilog
+- Hardware simulation, verification, and testbenching
+- Schematic capture, waveform analysis (GTKWave)
+- FPGA-ready coding practices (Basys3 support files)
+- Rigorous project structuring and documentation
+- Problem-solving under real-world constraints
+
+---
+
+## 📄 License
+
+Distributed under the [MIT License](LICENSE).  
+© 2025 Tejas R Mallah
+
+---
+
+## 🤝 Contact
 
 - **LinkedIn:** [Tejas R Mallah](https://www.linkedin.com/posts/tejas-r-mallah-28052b283_verilog-fpga-digitaldesign-activity-7364343834392113152-s981?utm_source=share&utm_medium=member_desktop&rcm=ACoAAET0mcABoSmVvowkUz7qcSZkG2bhRVZnDQ4)
 - **Email:** tejasmallah@gmail.com
 
 ---
+
+_Actively seeking opportunities in Digital Design, FPGA, RTL coding, and Hardware Verification.  
+Open for collaborations and internships focused on innovation and engineering excellence!_
+
+---
+
+> *#Verilog #DigitalDesign #FSM #VendingMachine #FPGA #RTL #HardwareDesign #Testbench #StateMachine*
 
 _Always open to opportunities and collaboration in digital design, FPGA, and hardware verification!_
 
