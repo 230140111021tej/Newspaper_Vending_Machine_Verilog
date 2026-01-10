@@ -26,6 +26,11 @@ Designed for clarity, reliability, and real-world fidelity, this project demonst
 
 ---
 
+- **Newspaper Vending Machine**  
+  [YouTube Demo](https://youtube.com/shorts/XYGwTmVMsH0?si=E0QXynvIGGdsfmXy)
+
+  ---
+  
 ## 🏗️ Project Architecture
 
 Core state transitions:
