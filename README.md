@@ -78,6 +78,12 @@ Core state transitions:
 
 ---
 
+Note:
+Simulation waveforms and console outputs correspond to the FSM verification testbench.
+Hardware functionality on the Basys-3 FPGA is demonstrated in the linked YouTube video.
+
+---
+
 ## 🗂️ Files & Structure
 
 ```
